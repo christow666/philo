@@ -5,11 +5,13 @@ SRCS = ./srcs/main.c
 OBJ = $(SRCS:.c=.o)
 CC = gcc 
 CFLAGS = -Wall -Wextra -Werror
+# CFLAGS = -Wall -Werror -Wextra -fsanitize=thread -g -pthread
 
 SRCS = 	./srcs/main.c\
 		./srcs/utils.c\
 		./srcs/philo_action.c\
-		.srcs/init_param.c
+		./srcs/fork_logic.c\
+		./srcs/init_param.c
 
 all: ${NAME}
 

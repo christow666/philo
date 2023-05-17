@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:35:00 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/01 17:10:36 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/16 23:57:32 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,24 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (a * p);
+}
+
+void		check_death(t_philo *philo)
+{
+	int	time;
+	
+	time = get_time();
+	if (time - philo->last_time_ate >= philo->time_to_die && *philo->is_dead == 0)
+	{
+		pthread_mutex_lock(&philo->dead_lock);
+		pthread_mutex_lock(&philo->write_lock);
+		*philo->is_dead = 1;
+		usleep(100);
+		printf(RED"%d calcul %d\n"RESET, philo->id, time - philo->last_time_ate);
+		philo_die(philo, time);
+		pthread_mutex_unlock(&philo->dead_lock);
+		pthread_mutex_unlock(&philo->write_lock);
+	}
 }
 
 int 	get_time(void)

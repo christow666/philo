@@ -6,48 +6,60 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:15:18 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/01 17:10:59 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/16 23:59:38 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+			// printf(YELLOW"%d l_fork %p\n"RESET, philo->id, philo->l_fork);
+			// printf(YELLOW"%d r_fork %p\n"RESET, philo->id, philo->r_fork);
+			// printf(YELLOW"%d is_dead %d\n"RESET, philo->id, *philo->is_dead);
+			// printf(YELLOW"%d time %d\n"RESET, philo->id, time);
+			// printf(YELLOW"%d last_time_ate %d\n"RESET, philo->id, philo->last_time_ate);
+			// printf(YELLOW"%d time_to_die %d\n"RESET, philo->id, philo->time_to_die);
+			// printf(YELLOW"%d calcul %d\n"RESET, philo->id, time - philo->last_time_ate);
+			// if (time - philo->last_time_ate >= philo->time_to_die && *philo->is_dead == 0)
 
 void	*philo_life(void *ptr)
 {
 	t_philo	*philo;
-	int	last_time_ate;
 	
 	philo = (t_philo *)ptr;
+	philo->last_time_ate = get_time();
 	while (1)
 	{
-		if (philo_have_forks(philo))
-		{
-			last_time_ate = get_time();
-			if (get_time() > last_time_ate + philo->time_to_die)
-			{
-				philo_die(philo);
-				break;
-			}
-			else
-			{
-				philo_eat(philo);
-				philo_sleep(philo);
-			}
-		}
+		check_death(philo);
+		if (*philo->is_dead == 1)
+			return(NULL);
+		philo_have_forks(philo);
+		if (*philo->is_dead == 1)
+			return(NULL);
+		check_death(philo);
+		philo_sleep(philo);
 	}
 	return(NULL);
 }
 
-void	init_pthread(t_philo *philo)
+void	simulation(char ** argv, t_philo *philo)
 {
-	pthread_t *thread;
-	int	i;
+	int			i;
+	t_philo		philos[200];
+	pthread_t 	thread[200];
+	t_mutex 	mutex;
+	int			is_dead;
 	
 	i = 0;
-	thread = malloc(philo->number_of_philosophers * sizeof(pthread_t));
+	is_dead = 0;
+	init_mutex(philo, &mutex);
 	while (i < philo->number_of_philosophers)
 	{
-		pthread_create(&thread[i], NULL, philo_life, philo);
+		init_philo(argv, &philos[i], &mutex, &is_dead);
+		i++;
+	}
+	i = 0;
+	while (i < philo->number_of_philosophers)
+	{
+		pthread_create(&thread[i], NULL, philo_life, &philos[i]);
 		i++;
 	}
 	while (i >= 0)
@@ -55,12 +67,6 @@ void	init_pthread(t_philo *philo)
 		pthread_join(thread[i], NULL);
 		i--;
 	}
-}
-
-void	ft_simulation(t_philo *philo)
-{
-	init_pthread(philo);
-	
 }
 
 int	main(int argc, char **argv)
@@ -73,7 +79,28 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	init_param(argv, &philo);
-	// print_param(&philo);
-	ft_simulation(&philo);
+	simulation(argv, &philo);
 	return (0);
 }
+
+
+// int		philo_have_forks(t_philo *philo)
+// {
+// 	if (*philo->is_dead == 0)
+// 	{
+// 		pthread_mutex_lock(&philo->write_lock);
+// 		if (pthread_mutex_lock(philo->l_fork) == 0)
+// 			pthread_mutex_lock(philo->r_fork);
+// 		printf("%d %d has taken a fork\n", get_time(), philo->id);
+// 		// printf(YELLOW"%d l_fork init %p\n"RESET, philo->id, philo->l_fork);
+// 		printf("%d %d has taken a fork\n", get_time(), philo->id);
+// 		// printf(YELLOW"%d l_fork init %p\n"RESET, philo->id, philo->r_fork);
+// 		pthread_mutex_unlock(&philo->write_lock);
+// 		philo_eat(philo);
+// 		pthread_mutex_unlock(philo->r_fork);
+// 		// printf(YELLOW"%d has dropped fork %p\n"RESET, philo->id, philo->r_fork);
+// 		pthread_mutex_unlock(philo->l_fork);
+// 		// printf(YELLOW"%d has dropped fork %p\n"RESET, philo->id, philo->l_fork);
+// 	}
+// 	return (1);
+// }

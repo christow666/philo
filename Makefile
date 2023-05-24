@@ -8,9 +8,9 @@ CFLAGS = -Wall -Wextra -Werror
 # CFLAGS = -Wall -Werror -Wextra -fsanitize=thread -g -pthread
 
 SRCS = 	./srcs/main.c\
-		./srcs/utils.c\
+		./srcs/utils_1.c\
+		./srcs/utils_2.c\
 		./srcs/philo_action.c\
-		./srcs/fork_logic.c\
 		./srcs/init_param.c
 
 all: ${NAME}

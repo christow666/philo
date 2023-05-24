@@ -6,51 +6,68 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:15:18 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/16 23:59:38 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/24 01:47:11 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-			// printf(YELLOW"%d l_fork %p\n"RESET, philo->id, philo->l_fork);
-			// printf(YELLOW"%d r_fork %p\n"RESET, philo->id, philo->r_fork);
-			// printf(YELLOW"%d is_dead %d\n"RESET, philo->id, *philo->is_dead);
-			// printf(YELLOW"%d time %d\n"RESET, philo->id, time);
-			// printf(YELLOW"%d last_time_ate %d\n"RESET, philo->id, philo->last_time_ate);
-			// printf(YELLOW"%d time_to_die %d\n"RESET, philo->id, philo->time_to_die);
-			// printf(YELLOW"%d calcul %d\n"RESET, philo->id, time - philo->last_time_ate);
-			// if (time - philo->last_time_ate >= philo->time_to_die && *philo->is_dead == 0)
+// printf(YELLOW"%d l_fork %p\n"RESET, philo->id, philo->l_fork);
+// printf(YELLOW"%d r_fork %p\n"RESET, philo->id, philo->r_fork);
+// printf(YELLOW"%d is_dead %d\n"RESET, philo->id, *philo->is_dead);
+// printf(YELLOW"%d time %d\n"RESET, philo->id, time);
+// printf(YELLOW"%d last_time_ate %d\n"RESET, philo->id, philo->last_time_ate);
+// printf(YELLOW"%d time_to_die %d\n"RESET, philo->id, philo->time_to_die);
+// printf(YELLOW"%d calcul %d\n"RESET, philo->id, time - philo->last_time_ate);
+
+void	init_param(char **argv, t_philo *philo)
+{
+	philo->number_of_philosophers = ft_atoi(argv[1]);
+	philo->time_to_die = ft_atoi(argv[2]);
+	philo->time_to_eat = ft_atoi(argv[3]);
+	philo->time_to_sleep = ft_atoi(argv[4]);
+	if (argv[5])
+		philo->number_of_times_each_philosopher_must_eat = atoi(argv[5]);
+}
 
 void	*philo_life(void *ptr)
 {
 	t_philo	*philo;
-	
+
 	philo = (t_philo *)ptr;
 	philo->last_time_ate = get_time();
+	if ((philo->id % 2 == 0) && philo->number_of_philosophers != 1)
+		usleep((philo->time_to_eat * 1000) / 2);
 	while (1)
 	{
-		check_death(philo);
-		if (*philo->is_dead == 1)
-			return(NULL);
-		philo_have_forks(philo);
-		if (*philo->is_dead == 1)
-			return(NULL);
-		check_death(philo);
+		if (is_dead(philo) == 1)
+			return (NULL);
+		if (philo->nb_eat == 1
+			&& philo->number_of_times_each_philosopher_must_eat == 0)
+			return (NULL);
+		fork_logic(philo);
+		if (philo->nb_eat == 1)
+			philo->number_of_times_each_philosopher_must_eat--;
+		if (philo->nb_eat == 1
+			&& philo->number_of_times_each_philosopher_must_eat == 0)
+			return (NULL);
+		if (is_dead(philo) == 1)
+			return (NULL);
 		philo_sleep(philo);
 	}
-	return(NULL);
+	return (NULL);
 }
 
-void	simulation(char ** argv, t_philo *philo)
+void	simulation(char **argv, t_philo *philo)
 {
 	int			i;
 	t_philo		philos[200];
-	pthread_t 	thread[200];
-	t_mutex 	mutex;
+	pthread_t	thread[200];
+	t_mutex		mutex;
 	int			is_dead;
-	
+
 	i = 0;
 	is_dead = 0;
-	init_mutex(philo, &mutex);
+	init_mutex(argv, philo, &mutex);
 	while (i < philo->number_of_philosophers)
 	{
 		init_philo(argv, &philos[i], &mutex, &is_dead);
@@ -69,38 +86,31 @@ void	simulation(char ** argv, t_philo *philo)
 	}
 }
 
+int	check_arg(int argc, char **argv)
+{
+	int	i;
+
+	i = 1;
+	if (argc < 4 || argc > 6)
+		return (write(2, RED"wrong number of arg\n"RESET, 27));
+	while (i < 6)
+	{
+		if (check_argv(argv[i]) == 1 || ft_atoi(argv[i]) <= 0)
+			return (write(2, RED"bad arg\n"RESET, 15));
+		i++;
+		if (i == 5 && argc != 6)
+			return (0);
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
-	t_philo philo;
-	
-	if (argc < 4 || argc > 6)
-	{
-		write(2, RED"wrong number of arg\n"RESET, 27);
+	t_philo	philo;
+
+	if (check_arg(argc, argv) != 0)
 		return (1);
-	}
 	init_param(argv, &philo);
 	simulation(argv, &philo);
 	return (0);
 }
-
-
-// int		philo_have_forks(t_philo *philo)
-// {
-// 	if (*philo->is_dead == 0)
-// 	{
-// 		pthread_mutex_lock(&philo->write_lock);
-// 		if (pthread_mutex_lock(philo->l_fork) == 0)
-// 			pthread_mutex_lock(philo->r_fork);
-// 		printf("%d %d has taken a fork\n", get_time(), philo->id);
-// 		// printf(YELLOW"%d l_fork init %p\n"RESET, philo->id, philo->l_fork);
-// 		printf("%d %d has taken a fork\n", get_time(), philo->id);
-// 		// printf(YELLOW"%d l_fork init %p\n"RESET, philo->id, philo->r_fork);
-// 		pthread_mutex_unlock(&philo->write_lock);
-// 		philo_eat(philo);
-// 		pthread_mutex_unlock(philo->r_fork);
-// 		// printf(YELLOW"%d has dropped fork %p\n"RESET, philo->id, philo->r_fork);
-// 		pthread_mutex_unlock(philo->l_fork);
-// 		// printf(YELLOW"%d has dropped fork %p\n"RESET, philo->id, philo->l_fork);
-// 	}
-// 	return (1);
-// }

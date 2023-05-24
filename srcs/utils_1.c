@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:35:00 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/24 01:08:46 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/24 02:07:28 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ int	ft_isdigit(int c)
 	return (0);
 }
 
-int	ft_atoi(const char *str)
+double	ft_atoi(const char *str)
 {
 	int				i;
-	int				a;
+	double			a;
 	int				p;
 
 	i = 0;

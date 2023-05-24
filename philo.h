@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:16:02 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/24 01:19:18 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/24 02:08:52 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <limits.h>
 
 # define RED "\033[1;31m"
 # define GREEN "\033[1;32m"
@@ -56,7 +57,7 @@ typedef struct philo
 
 //utils_1
 int		ft_isdigit(int c);
-int		ft_atoi(const char *str);
+double		ft_atoi(const char *str);
 void	check_death(t_philo *philo);
 int		is_dead(t_philo *philo);
 

@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:15:18 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/24 01:47:11 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/24 02:08:33 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,12 @@ int	check_arg(int argc, char **argv)
 	i = 1;
 	if (argc < 4 || argc > 6)
 		return (write(2, RED"wrong number of arg\n"RESET, 27));
+	if (ft_atoi(argv[1]) > 200)
+		return (write(2, RED"too much philo\n"RESET, 22));
 	while (i < 6)
 	{
+		if (i != 1 && ft_atoi(argv[i]) > INT_MAX)
+			return (write(2, RED"bad arg\n"RESET, 15));
 		if (check_argv(argv[i]) == 1 || ft_atoi(argv[i]) <= 0)
 			return (write(2, RED"bad arg\n"RESET, 15));
 		i++;

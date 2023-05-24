@@ -24,7 +24,6 @@ clean:
 
 fclean: clean
 				rm -f ${NAME}
-				rm -f bonus
 
 re: fclean all
 

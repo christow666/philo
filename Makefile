@@ -4,8 +4,8 @@ SRCS = ./srcs/main.c
 
 OBJ = $(SRCS:.c=.o)
 CC = gcc 
-CFLAGS = -Wall -Wextra -Werror
-# CFLAGS = -Wall -Werror -Wextra -fsanitize=thread -g -pthread
+# CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Werror -Wextra -fsanitize=thread -g -pthread
 
 SRCS = 	./srcs/main.c\
 		./srcs/utils_1.c\

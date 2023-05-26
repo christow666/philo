@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:15:18 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/24 02:08:33 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/25 20:59:16 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,12 @@ void	*philo_life(void *ptr)
 	philo = (t_philo *)ptr;
 	philo->last_time_ate = get_time();
 	if ((philo->id % 2 == 0) && philo->number_of_philosophers != 1)
-		usleep((philo->time_to_eat * 1000) / 2);
-	while (1)
 	{
-		if (is_dead(philo) == 1)
-			return (NULL);
+		printf("%d %d is thinking\n", get_time(), philo->id);
+		usleep((philo->time_to_eat * 1000) / 2);
+	}
+	while (is_dead(philo) == 0)
+	{
 		if (philo->nb_eat == 1
 			&& philo->number_of_times_each_philosopher_must_eat == 0)
 			return (NULL);
@@ -49,8 +50,6 @@ void	*philo_life(void *ptr)
 			philo->number_of_times_each_philosopher_must_eat--;
 		if (philo->nb_eat == 1
 			&& philo->number_of_times_each_philosopher_must_eat == 0)
-			return (NULL);
-		if (is_dead(philo) == 1)
 			return (NULL);
 		philo_sleep(philo);
 	}
@@ -91,7 +90,7 @@ int	check_arg(int argc, char **argv)
 	int	i;
 
 	i = 1;
-	if (argc < 4 || argc > 6)
+	if (argc < 5 || argc > 6)
 		return (write(2, RED"wrong number of arg\n"RESET, 27));
 	if (ft_atoi(argv[1]) > 200)
 		return (write(2, RED"too much philo\n"RESET, 22));

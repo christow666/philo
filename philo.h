@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:16:02 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/24 02:08:52 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/24 02:11:20 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef struct philo
 
 //utils_1
 int		ft_isdigit(int c);
-double		ft_atoi(const char *str);
+double	ft_atoi(const char *str);
 void	check_death(t_philo *philo);
 int		is_dead(t_philo *philo);
 

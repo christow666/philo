@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 17:15:18 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/25 20:59:16 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/25 21:37:26 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,9 @@ void	simulation(char **argv, t_philo *philo)
 		pthread_create(&thread[i], NULL, philo_life, &philos[i]);
 		i++;
 	}
+	i--;
 	while (i >= 0)
-	{
-		pthread_join(thread[i], NULL);
-		i--;
-	}
+		pthread_join(thread[i--], NULL);
 }
 
 int	check_arg(int argc, char **argv)

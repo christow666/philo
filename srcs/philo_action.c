@@ -6,7 +6,7 @@
 /*   By: cperron <cperron@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 16:51:05 by cperron           #+#    #+#             */
-/*   Updated: 2023/05/24 00:05:15 by cperron          ###   ########.fr       */
+/*   Updated: 2023/05/25 23:18:31 by cperron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	fork_logic(t_philo *philo)
 	if (is_dead(philo) == 0)
 		printf("%d %d has taken a fork\n", get_time(), philo->id);
 	pthread_mutex_unlock(philo->write_lock);
+	check_death(philo);
 	philo_eat(philo);
 	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(philo->l_fork);
@@ -72,4 +73,5 @@ void	philo_sleep(t_philo *philo)
 	if (is_dead(philo) == 0)
 		printf("%d %d is thinking\n", get_time(), philo->id);
 	pthread_mutex_unlock(philo->write_lock);
+	custom_sleep(philo, (philo->time_to_eat - philo->time_to_sleep) * 1000);
 }
